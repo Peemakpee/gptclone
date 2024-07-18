@@ -1,34 +1,34 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from openai import OpenAI
+import google.generativeai as genai
 import os
+from dotenv import load_dotenv
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Load environment variables from .env file
+load_dotenv()
 
-def ask_openai(message):
+# Initialize the Google Generative AI client
+api_key = os.getenv('GEMINI_API_KEY')
+genai.configure(api_key=api_key)
+
+# Example function to interact with Gemini API
+def ask_google_genai(message):
     try:
-        response = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": message,
-                }
-            ],
-            model="",
-            max_tokens=150,
-            temperature=0.7,
-        )
-        print(response)  # Print the response to the terminal for debugging
-        answer = response['choices'][0]['message']['content'].strip()
-        return answer
+        # Initialize the GenerativeModel with your desired model
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Generate content based on the message
+        response = model.generate_content(message)
+        
+        return response.text.strip()  # Extract the text response
     except Exception as e:
-        print(f"Error fetching response from OpenAI: {e}")
+        print(f"Error fetching response from Google Generative AI: {e}")
         return "Sorry, I couldn't process your request at the moment."
 
+# Example Django view function
 def chatbot(request):
     if request.method == 'POST':
         message = request.POST.get('message')
-        response = ask_openai(message)
+        response = ask_google_genai(message)
         return JsonResponse({'message': message, 'response': response})
     return render(request, 'chatbot.html')

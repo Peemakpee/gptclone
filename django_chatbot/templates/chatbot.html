@@ -5,97 +5,127 @@
   body,
   html {
     height: 100%;
-  }
-
-  .messages-box {
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .messages-list {
-    padding-left: 0;
-  }
-
-  .message {
-    margin-bottom: 15px;
-    list-style: none;
-  }
-
-  .message-text {
-    padding: 10px;
-    border-radius: 5px;
-  }
-
-  .sent {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-  }
-
-  .received {
-    background-color: #f1f0f0;
-    align-self: flex-start;
-  }
-
-  .message-form {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px;
-    background-color: #f8f9fa;
-  }
-
-  .message-input {
-    flex: 1;
-    border-radius: 0;
-    border-right: none;
-  }
-
-  .btn-send {
-    border-radius: 0;
+    background-color: #f8f9fa; /* Light gray background */
   }
 
   .chat-container {
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 20px;
+    max-width: 600px; /* Limit width to enhance readability */
+    margin: 0 auto; /* Center align horizontally */
+    background-image: url('/static/images/sleeping.jpg'); /* Path to your image */
+    background-size: cover; /* Cover the entire container */
+    background-position: center; /* Center the image */
+  }
+
+  .card {
+    flex-grow: 1;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  }
+
+  .card-header {
+    background-color: #007bff; /* Blue header */
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .messages-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+  }
+
+  .messages-list {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .message {
+    margin-bottom: 15px;
+  }
+
+  .message-text {
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%; /* Limit message width */
+  }
+
+  .sent {
+    background-color: #dcf8c6; /* Light green for sent messages */
+    align-self: flex-end;
+  }
+
+  .received {
+    background-color: #f1f0f0; /* Light gray for received messages */
+    align-self: flex-start;
+  }
+
+  .message-form {
+    display: flex;
+    margin-top: auto; /* Push form to bottom */
+    background-color: #ffffff; /* White background for form */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+  }
+
+  .message-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Inner shadow */
+  }
+
+  .btn-send {
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 10px 20px;
+    background-color: #007bff; /* Blue send button */
+    color: white;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-send:hover {
+    background-color: #0056b3; /* Darker blue on hover */
   }
 </style>
 {% endblock %}
 
-
 {% block content %}
 <div class="chat-container">
-  <div class="card flex-grow-1">
-    <div class="card-header bg-primary text-white">Chat</div>
+  <div class="card">
+    <div class="card-header">Chat with AI</div>
     <div class="card-body messages-box">
-
       <ul class="list-unstyled messages-list">
-
+        <!-- Example received message (AI greeting) -->
         <li class="message received">
           <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-              Hi, I am your AI Chatbot, you can ask me anything.
-            </div>
+            <div class="message-sender"><b>AI Chatbot</b></div>
+            <div class="message-content">Hi, I am your AI Chatbot. You can ask me anything.</div>
           </div>
         </li>
       </ul>
-
     </div>
-    <br><br>
-    <br><br>
-    <br><br>
   </div>
+
   <form class="message-form">
-    {%csrf_token%}
+    {% csrf_token %}
     <div class="input-group">
       <input type="text" class="form-control message-input" placeholder="Type your message...">
       <div class="input-group-append">
-        <button type="submit" class="btn btn-primary btn-send">Send</button>
+        <button type="submit" class="btn btn-send">Send</button>
       </div>
     </div>
   </form>
@@ -118,12 +148,8 @@
     messageItem.classList.add('message', 'sent');
     messageItem.innerHTML = `
         <div class="message-text">
-            <div class="message-sender">
-                <b>You</b>
-            </div>
-            <div class="message-content">
-                ${message}
-            </div>
+            <div class="message-sender"><b>You</b></div>
+            <div class="message-content">${message}</div>
         </div>`;
     messagesList.appendChild(messageItem);
 
@@ -144,19 +170,12 @@
         messageItem.classList.add('message', 'received');
         messageItem.innerHTML = `
         <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-                ${response}
-            </div>
-        </div>
-          `;
+            <div class="message-sender"><b>AI Chatbot</b></div>
+            <div class="message-content">${response}</div>
+        </div>`;
         messagesList.appendChild(messageItem);
       });
   });
 
 </script>
-
-
 {% endblock %}
