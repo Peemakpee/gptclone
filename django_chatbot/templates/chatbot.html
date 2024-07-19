@@ -6,6 +6,7 @@
   html {
     height: 100%;
     background-color: #f8f9fa; /* Light gray background */
+    background-image: url('/static/images/ai.jpg'); /* Path to your image */
   }
 
   .chat-container {
@@ -15,7 +16,6 @@
     padding: 20px;
     max-width: 600px; /* Limit width to enhance readability */
     margin: 0 auto; /* Center align horizontally */
-    background-image: url('/static/images/sleeping.jpg'); /* Path to your image */
     background-size: cover; /* Cover the entire container */
     background-position: center; /* Center the image */
   }
@@ -29,7 +29,7 @@
   }
 
   .card-header {
-    background-color: #007bff; /* Blue header */
+    background-color: #000000; /* Black header */
     color: white;
     padding: 10px 15px;
     font-weight: bold;
@@ -40,6 +40,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 15px;
+    position: relative; /* For positioning spinner */
   }
 
   .messages-list {
@@ -89,7 +90,7 @@
     border-radius: 5px;
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #007bff; /* Blue send button */
+    background-color: #000000; /* Black send button */
     color: white;
     border: none;
     cursor: pointer;
@@ -98,7 +99,27 @@
   }
 
   .btn-send:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #333333; /* Darker black on hover */
+  }
+
+  /* Spinner styles */
+  .spinner {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #000000; /* Black */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Hidden by default */
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
 {% endblock %}
@@ -117,6 +138,7 @@
           </div>
         </li>
       </ul>
+      <div class="spinner"></div> <!-- Spinner element -->
     </div>
   </div>
 
@@ -135,6 +157,7 @@
   const messagesList = document.querySelector('.messages-list');
   const messageForm = document.querySelector('.message-form');
   const messageInput = document.querySelector('.message-input');
+  const spinner = document.querySelector('.spinner');
 
   messageForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -155,6 +178,9 @@
 
     messageInput.value = '';
 
+    // Show spinner
+    spinner.style.display = 'block';
+
     fetch('', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -165,6 +191,9 @@
     })
       .then(response => response.json())
       .then(data => {
+        // Hide spinner
+        spinner.style.display = 'none';
+
         const response = data.response;
         const messageItem = document.createElement('li');
         messageItem.classList.add('message', 'received');
@@ -176,6 +205,5 @@
         messagesList.appendChild(messageItem);
       });
   });
-
 </script>
 {% endblock %}
