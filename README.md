@@ -1,2 +1,2 @@
 # gptclone
- ChatGPT clone made in Django
+Conversational AI made in Django
